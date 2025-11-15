@@ -1,4 +1,4 @@
-name: CI-CD
+name: CI-CD-Security
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  tests_and_sast:
+  security_checks:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,20 +24,20 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libmariadb-dev libmariadb-dev-compat
 
-      - name: Install Python dependencies
+      - name: Install Python dependencies + security tools
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest bandit
-
-      - name: Run unit tests
-        run: pytest
+          pip install bandit pip-audit
 
       - name: Run SAST with Bandit
         run: bandit -r .
 
+      - name: Check dependencies with pip-audit
+        run: pip-audit
+
   build_docker:
-    needs: tests_and_sast
+    needs: security_checks
     runs-on: ubuntu-latest
 
     steps:
@@ -59,4 +59,4 @@ jobs:
     steps:
       - name: Deploy (placeholder)
         run: |
-          echo "Tutaj normalnie byłaby komenda deployu (np. na AWS, EC2, Elastic Beanstalk itp.)"
+          echo "Tutaj normalnie byłaby komenda deployu (np. na AWS / serwer)"

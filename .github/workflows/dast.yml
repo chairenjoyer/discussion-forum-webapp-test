@@ -22,7 +22,6 @@ jobs:
           sudo apt-get install -y \
             libmariadb-dev \
             libmariadb-dev-compat \
-            default-libmysqlclient-dev \
             gcc \
             pkg-config
 

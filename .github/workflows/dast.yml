@@ -32,7 +32,7 @@ jobs:
 
       - name: Run migrations
         run: |
-          python manage.py migrate
+          python forum_proj/manage.py migrate
 
       - name: Run Django dev server
         run: |

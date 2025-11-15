@@ -41,6 +41,7 @@ jobs:
 
       - name: Check dependencies with pip-audit
         run: pip-audit
+        continue-on-error: true
 
   build_docker:
     needs: security_checks

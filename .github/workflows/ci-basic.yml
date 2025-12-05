@@ -65,7 +65,7 @@ jobs:
       - name: Build Docker image
         run: |
           echo "Buduję obraz Dockera z Dockerfile..."
-          docker build -t my-app-ci-image:latest .
+          docker build -t my-app-ci-image:latest forum_proj
 
       - name: Scan Docker image with Trivy
         uses: aquasecurity/trivy-action@0.28.0

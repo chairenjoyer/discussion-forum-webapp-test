@@ -54,6 +54,29 @@ jobs:
           name: bandit-report
           path: bandit-report.txt
 
+  aws-connection-test:
+    needs: build-image
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write      # wymagane, żeby pobrać token OIDC
+      contents: read       # standardowe minimum
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::666524608350:role/github-actions-eks-role
+          aws-region: us-east-1
+
+      - name: Test AWS connection (STS GetCallerIdentity)
+        run: |
+          echo "Wywołuję aws sts get-caller-identity..."
+          aws sts get-caller-identity
+
+
   build-image:
     needs: tests
     runs-on: ubuntu-latest

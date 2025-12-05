@@ -17,7 +17,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'  # zmień, jeśli używasz innej wersji
+          python-version: '3.11'  # zmień, jeśli używasz innej wersji Pythona
 
       - name: Install dependencies
         run: |
@@ -31,3 +31,16 @@ jobs:
           else
             echo "pytest not installed or no tests yet - skipping"
           fi
+
+      - name: Install Bandit
+        run: |
+          pip install bandit
+
+      - name: Run Bandit SAST scan
+        run: |
+          # -r .    -> skanuj rekursywnie cały projekt
+          # -ll     -> log level: tylko ważniejsze rzeczy
+          # -ii     -> pokaż tylko istotne (medium/high confidence)
+          # -f txt  -> format raportu: tekst
+          # -o ...  -> zapisz raport do pliku
+          bandit -r . -ll -ii -f txt -o bandit-report.txt

@@ -53,3 +53,16 @@ jobs:
         with:
           name: bandit-report
           path: bandit-report.txt
+
+  build-image:
+    needs: tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: |
+          echo "Buduję obraz Dockera z Dockerfile..."
+          docker build -t my-app-ci-image:latest forum_proj

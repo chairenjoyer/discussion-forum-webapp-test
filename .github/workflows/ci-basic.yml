@@ -65,4 +65,14 @@ jobs:
       - name: Build Docker image
         run: |
           echo "Buduję obraz Dockera z Dockerfile..."
-          docker build -t my-app-ci-image:latest forum_proj
+          docker build -t my-app-ci-image:latest .
+
+      - name: Scan Docker image with Trivy
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: my-app-ci-image:latest   # ta sama nazwa, co w docker build
+          format: 'table'                     # czytelny raport w logach
+          exit-code: '0'                      # na razie NIE psujemy pipeline’u
+          ignore-unfixed: true                # pomijaj podatności bez fixa
+          vuln-type: 'os,library'             # system + biblioteki
+          severity: 'CRITICAL,HIGH,MEDIUM,LOW'

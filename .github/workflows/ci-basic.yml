@@ -17,7 +17,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'  # zmień, jeśli używasz innej wersji Pythona
+          python-version: '3.11'
 
       - name: Install dependencies
         run: |
@@ -38,9 +38,18 @@ jobs:
 
       - name: Run Bandit SAST scan
         run: |
-          # -r .    -> skanuj rekursywnie cały projekt
-          # -ll     -> log level: tylko ważniejsze rzeczy
-          # -ii     -> pokaż tylko istotne (medium/high confidence)
-          # -f txt  -> format raportu: tekst
-          # -o ...  -> zapisz raport do pliku
           bandit -r . -ll -ii -f txt -o bandit-report.txt
+
+      - name: Show Bandit report in logs
+        if: always()
+        run: |
+          echo "===== BANDIT REPORT START ====="
+          cat bandit-report.txt || echo "Brak pliku bandit-report.txt"
+          echo "===== BANDIT REPORT END ====="
+
+      - name: Upload Bandit report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bandit-report
+          path: bandit-report.txt

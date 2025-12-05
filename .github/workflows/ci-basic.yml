@@ -69,7 +69,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::666524608350:role/github-actions-eks-role
-          aws-region: us-east-1
+          aws-region: eu-north-1
 
       - name: Test AWS connection (STS GetCallerIdentity)
         run: |

@@ -80,6 +80,9 @@ jobs:
   build-image:
     needs: tests
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write 
+      contents: read 
     env:
       AWS_REGION: eu-north-1     
       AWS_ACCOUNT_ID: "666524608350"     

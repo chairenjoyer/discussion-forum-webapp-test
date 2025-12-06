@@ -180,3 +180,19 @@ jobs:
       - name: Show pods after deploy
         run: |
           kubectl get pods -n $K8S_NAMESPACE
+
+  dast-zap:
+    needs: deploy-to-eks
+    runs-on: ubuntu-latest
+
+    env:
+      APP_URL: "http://k8s-forumnam-foruming-cc265db803-663786899.eu-north-1.elb.amazonaws.com"
+
+    steps:
+      - name: ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.13.0
+        with:
+          target: ${{ env.APP_URL }}
+          fail_action: false 
+          cmd_options: "-a"
+

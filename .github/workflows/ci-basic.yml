@@ -130,7 +130,7 @@ jobs:
         run: |
           docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
 
-  eks-connection-test:
+  deploy-to-eks:
     needs: build-image
     runs-on: ubuntu-latest
     permissions:
@@ -139,7 +139,13 @@ jobs:
 
     env:
       AWS_REGION: eu-north-1
-      EKS_CLUSTER_NAME: forum-cluster-2
+      AWS_ACCOUNT_ID: "666524608350"
+      EKS_CLUSTER_NAME: "forum-cluster-2"
+      K8S_NAMESPACE: "forum-namespace" 
+      K8S_DEPLOYMENT: "forum-webapp" 
+      K8S_CONTAINER_NAME: "forum-webapp"
+      ECR_REPOSITORY: "forum-app"
+      IMAGE_TAG: "${{ github.sha }}"
 
     steps:
       - name: Checkout code
@@ -157,9 +163,20 @@ jobs:
             --name $EKS_CLUSTER_NAME \
             --region $AWS_REGION
 
-      - name: Test kubectl access (get nodes)
+      - name: Set new image in Deployment
         run: |
-          kubectl get nodes
-          kubectl get ns
+          NEW_IMAGE="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG"
+          echo "Ustawiam obraz: $NEW_IMAGE"
+          kubectl set image deployment/$K8S_DEPLOYMENT \
+            $K8S_CONTAINER_NAME=$NEW_IMAGE \
+            -n $K8S_NAMESPACE
 
+      - name: Wait for rollout to finish
+        run: |
+          kubectl rollout status deployment/$K8S_DEPLOYMENT \
+            -n $K8S_NAMESPACE \
+            --timeout=300s
 
+      - name: Show pods after deploy
+        run: |
+          kubectl get pods -n $K8S_NAMESPACE

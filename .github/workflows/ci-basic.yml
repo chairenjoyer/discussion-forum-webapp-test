@@ -193,6 +193,6 @@ jobs:
         uses: zaproxy/action-baseline@v0.13.0
         with:
           target: ${{ env.APP_URL }}
-          fail_action: false 
+          fail_action: false
+          allow_issue_writing: false
           cmd_options: "-a"
-

@@ -195,4 +195,5 @@ jobs:
           target: ${{ env.APP_URL }}
           fail_action: false
           allow_issue_writing: false
+          allow_markdown_upload: false
           cmd_options: "-a"

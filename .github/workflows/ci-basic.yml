@@ -110,7 +110,7 @@ jobs:
       - name: Build Docker image
         run: |
           echo "Buduję obraz Dockera z Dockerfile..."
-          docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -t $ECR_REPOSITORY:$IMAGE_TAG forum_proj
 
           # Tagujemy obraz pełnym adresem ECR
           docker tag $ECR_REPOSITORY:$IMAGE_TAG \
